@@ -1,3 +1,4 @@
+Video Explicatiu del codi modificat:https://www.youtube.com/watch?v=jmBDLDq57T0 Referencies: codi grup REACT y chatGPT
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
