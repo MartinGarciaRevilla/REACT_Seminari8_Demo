@@ -8,6 +8,7 @@ interface FormProps {
 }
 
 const INITIAL_STATE: User = {
+    _id: '', // Valor predeterminado
     name: '',
     age: 0,
     email: '',

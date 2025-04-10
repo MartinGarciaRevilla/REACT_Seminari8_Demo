@@ -5,6 +5,7 @@ import Form from './components/Form';
 import UsersList from './components/UsersList';
 import { fetchUsers, LogIn } from './services/usersService';
 import Login from './components/Login';
+import EditUser from './components/EditUser/EditUser';
 
 interface AppState {
     currentUser: User | null;
@@ -31,7 +32,9 @@ function App() {
         newUserName: '',
     });
 
-    const divRef = useRef<HTMLDivElement>(null); // Mantenemos el useRef como ejemplo
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+
+    const divRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const loadUsers = async () => {
@@ -73,7 +76,6 @@ function App() {
         setUiState((prev) => {
             const newMode = !prev.isDarkMode;
 
-            // Ejemplo de uso de useRef para cambiar estilos directamente
             if (divRef.current) {
                 divRef.current.style.backgroundColor = newMode ? '#333333' : '#ffffff';
                 divRef.current.style.color = newMode ? '#ffffff' : '#000000';
@@ -95,9 +97,21 @@ function App() {
         }
     };
 
+    const handleEditUser = (user: User) => {
+        setEditingUser(user);
+    };
+
+    const handleUpdateUser = (updatedUser: User) => {
+        setUsers((prevUsers) =>
+            prevUsers.map((user) =>
+                user.name === updatedUser.name ? updatedUser : user
+            )
+        );
+        setEditingUser(null);
+    };
+
     return (
         <div className="App" ref={divRef}>
-            {/* Notification Popup */}
             {uiState.showNotification && (
                 <div className={`notification ${uiState.isDarkMode ? 'dark' : 'light'}`}>
                     User <strong>{uiState.newUserName}</strong> has been created successfully!
@@ -113,10 +127,16 @@ function App() {
                     <Login
                         onLogin={({ email, password }) => handleLogin(email, password)}
                     />
+                ) : editingUser ? (
+                    <EditUser
+                        user={editingUser}
+                        onUpdate={handleUpdateUser}
+                        onCancel={() => setEditingUser(null)}
+                    />
                 ) : (
                     <>
                         <h2>Bienvenido, {currentUser?.name}!</h2>
-                        <UsersList users={users} />
+                        <UsersList users={users} onEdit={handleEditUser} />
                         <p>New users: {newUsersNumber}</p>
                         <Form onNewUser={handleNewUser} />
                     </>
